@@ -30,8 +30,8 @@ class Locations(models.Model):
     price_high = models.IntegerField(verbose_name='上限金額', null=True)
     time_open = models.TimeField(verbose_name='開店時間', null=True)
     time_close = models.TimeField(verbose_name='閉店時間', null=True)
-    created_date = models.TimeField(auto_now_add=True, null=True)
-    updated_date = models.TimeField(auto_now=True, null=True)
+    created_date = models.DateTimeField(verbose_name='作成日時', auto_now_add=True, null=True)
+    updated_date = models.DateTimeField(verbose_name='更新日時', auto_now=True, null=True)
 
     def __str__(self):
         return self.name
