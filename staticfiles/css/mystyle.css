@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Zen+Old+Mincho&display=swap');
+
+body, #wrapper{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.masthead-content{
+    font-family: 'Zen Old Mincho', serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.my-div-style{
+    margin-top: 6rem;
+}
+
+footer{
+    margin-top: auto;
+}
