@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}予約ページ{% endblock %}
+
+{% block header%}
+<div class="my-div-style">
+    <h1>予約の作成</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">予約する</button>
+    </form>
+</div>
+
+{% endblock %}

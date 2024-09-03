@@ -1,4 +1,7 @@
+import datetime
 from django.db import models
+
+from accounts.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=20, verbose_name='カテゴリ名')
@@ -18,8 +21,8 @@ class Holiday(models.Model):
 
 class Location(models.Model):
     name = models.CharField(max_length=50, verbose_name='店舗名')
-    category = models.ForeignKey(Category, verbose_name='カテゴリ', null=True, on_delete=models.PROTECT)
-    holiday = models.ForeignKey(Holiday, verbose_name='店休日', null=True, on_delete=models.PROTECT)
+    category = models.ManyToManyField(Category, verbose_name='カテゴリ', blank=True)
+    holiday = models.ManyToManyField(Holiday, verbose_name='店休日', blank=True)
     image = models.ImageField(blank=True, default='noImage.png', verbose_name='画像')
     description = models.TextField(max_length=200, verbose_name='説明', null=True)
     capacity = models.IntegerField(verbose_name='定員', null=True)
@@ -36,31 +39,23 @@ class Location(models.Model):
     def __str__(self):
         return self.name
     
-class Customer(models.Model):
-    name = models.CharField(max_length=50, verbose_name='氏名')
-    furigana = models.CharField(max_length=100, verbose_name='フリガナ')
-    email = models.EmailField(verbose_name='メールアドレス')
-    password = models.CharField(max_length=50, verbose_name='パスワード')
-    membership_flg = models.BooleanField(default=False, verbose_name='有料会員フラグ')
-    created_date = models.DateTimeField(verbose_name='作成日時', auto_now_add=True, null=True)
-    updated_date = models.DateTimeField(verbose_name='更新日時', auto_now=True, null=True)
-
-    def __str__(self):
-        return self.name
-    
 class Reservation(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='予約者名')
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='予約者名')
     location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name='店舗名')
-    datetime = models.DateTimeField(verbose_name='予約日時')
+    date = models.DateField(verbose_name='予約日', null=True)
+    time = models.TimeField(verbose_name='予約時間', null=True)
     headcount = models.IntegerField(verbose_name='予約人数')
     created_date = models.DateTimeField(verbose_name='作成日時', auto_now_add=True, null=True)
     updated_date = models.DateTimeField(verbose_name='更新日時', auto_now=True, null=True)
+    a = models.CharField(max_length=15)
 
     def __str__(self):
-        return self.name
+        return f"Reservation by {self.customer.name} at {self.location.name} on {self.date}"
+
+
     
 class Favorite(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='ユーザー名')
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='ユーザー名')
     location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name='店舗名')
     created_date = models.DateTimeField(verbose_name='作成日時', auto_now_add=True, null=True)
     updated_date = models.DateTimeField(verbose_name='更新日時', auto_now=True, null=True)
@@ -69,7 +64,7 @@ class Favorite(models.Model):
         return self.name
     
 class Review(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='ユーザー名')
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='ユーザー名')
     location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name='店舗名')
     score = models.IntegerField(verbose_name='評価')
     comment = models.TextField(null=True, verbose_name='コメント')

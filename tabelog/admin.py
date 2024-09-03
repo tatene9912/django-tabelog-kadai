@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import Location, Category, Holiday, Customer, Reservation, Favorite, Review, Admin_user
+from .models import Location, Category, Holiday, Reservation, Favorite, Review, Admin_user
 from django.utils.safestring import mark_safe
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.fields import Field
 from import_export.resources import ModelResource
-from import_export.widgets import ForeignKeyWidget
+from import_export.widgets import ForeignKeyWidget, ManyToManyWidget 
 
     
 class CategoryAdmin(admin.ModelAdmin):
@@ -21,7 +21,7 @@ class CustomerAdmin(admin.ModelAdmin):
     search_fields = ('name', )
 
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customer', 'location', 'datetime', 'headcount', 'created_date', 'updated_date')
+    list_display = ('id', 'customer', 'location', 'date', 'time','headcount', 'created_date', 'updated_date')
     search_fields = ('customer', 'location', )
 
 class FavoriteAdmin(admin.ModelAdmin):
@@ -38,8 +38,8 @@ class Admin_userAdmin(admin.ModelAdmin):
 
 class LocationResource(ModelResource):
     name = Field(attribute='name', column_name='name')
-    category = Field(attribute='category', column_name='category', widget=ForeignKeyWidget(Category, 'name'))
-    holiday = Field(attribute='holiday', column_name='holiday', widget=ForeignKeyWidget(Holiday, 'name'))
+    category = Field(attribute='category', column_name='category', widget=ManyToManyWidget(Category, 'id'))
+    holiday = Field(attribute='holiday', column_name='holiday', widget=ManyToManyWidget(Holiday, 'id'))
     description = Field(attribute='description', column_name='description')
     capacity = Field(attribute='capacity', column_name='capacity')
     postal_code = Field(attribute='postal_code', column_name='postal_code')
@@ -50,14 +50,20 @@ class LocationResource(ModelResource):
     time_open = Field(attribute='time_open', column_name='time_open')
     time_close = Field(attribute='time_close', column_name='time_close')
 
+    # def before_save_instance(self, instance, dry_run):
+    #     # CSVからデータを取り込み、多対多フィールドを設定
+    #     many_to_many_data = instance.category  # `category`がManyToManyFieldの例
+    #     instance.save()  # インスタンスを一度保存してからセット
+    #     instance.category.set(many_to_many_data)
+
     class Meta:
         model = Location
         skip_unchanged = True
         use_bulk = True
+        exclude = ('some_abstract_field',) 
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Holiday, HolidayAdmin)
-admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Reservation, ReservationAdmin)
 admin.site.register(Favorite, FavoriteAdmin)
 admin.site.register(Review, ReviewAdmin)

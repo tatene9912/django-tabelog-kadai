@@ -30,7 +30,7 @@
                     <ul class="navbar-nav me-auto">
                         {% if not user.is_authenticated %}
                         {% else %}
-                        <li class="nav-item" style="color: azure;">おかえりなさい！ {{ user.account_id }} さん</li>
+                        <li class="nav-item" style="color: azure;">おかえりなさい！ {{ user.name }} さん</li>
                         {% endif %}
                     </ul>
                     <ul class="navbar-nav ms-auto">
