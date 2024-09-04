@@ -28,6 +28,7 @@ urlpatterns = [
     path('tabelog/detail/<int:pk>', views.LocationDetailView.as_view(), name="detail"),
     path('reserve/<int:location_id>/', views.ReservationCreateView.as_view(), name='reservation_create'),
     path('account/', include('allauth.urls')), 
+    path('add_favorite/<int:location_id>/', views.add_favorite, name='add_favorite'),
 ]
 
 if settings.DEBUG:

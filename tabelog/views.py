@@ -1,10 +1,14 @@
 import datetime
+import json
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, ListView, DetailView, CreateView
-from .models import Location,Reservation
+from .models import Favorite, Location,Reservation
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import ReservationForm
+from .forms import FavoriteForm, ReservationForm
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 # class TopView(TemplateView):
 #     template_name = "top.html"
@@ -17,6 +21,19 @@ class LocationView(ListView):
 class LocationDetailView(DetailView):
     model = Location
     template_name = "location_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        location = self.object
+        user = self.request.user
+
+        # お気に入りの状態をチェック
+        if user.is_authenticated:
+            context['is_favorite'] = Favorite.objects.filter(customer=user, location=location).exists()
+        else:
+            context['is_favorite'] = False
+
+        return context
 
 class ReservationCreateView(CreateView):
     form_class = ReservationForm
@@ -51,3 +68,23 @@ class ReservationCreateView(CreateView):
         reservation.save()
         messages.success(self.request, '予約が完了しました。')
         return redirect('tabelog:location_detail', pk=location.pk)
+    
+def add_favorite(request, location_id):
+    if request.method == 'POST':
+        # 既存のお気に入りをチェック
+        if Favorite.objects.filter(customer=request.user, location_id=location_id).exists():
+            messages.info(request, 'すでにお気に入りに追加されています。')
+            return redirect('tabelog:location_detail', pk=location_id)
+
+        form = FavoriteForm(request.POST)
+        if form.is_valid():
+            favorite = form.save(commit=False)
+            favorite.customer = request.user  # ログイン中のユーザーを設定
+            favorite.location_id = location_id
+            favorite.save()
+            messages.success(request, 'お気に入りに追加しました。')
+            return redirect('tabelog:location_detail', pk=location_id)
+    else:
+        form = FavoriteForm()
+    
+    return render(request, 'location_detail.html', {'form': form})

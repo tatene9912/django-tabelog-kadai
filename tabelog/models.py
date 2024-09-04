@@ -47,7 +47,6 @@ class Reservation(models.Model):
     headcount = models.IntegerField(verbose_name='予約人数')
     created_date = models.DateTimeField(verbose_name='作成日時', auto_now_add=True, null=True)
     updated_date = models.DateTimeField(verbose_name='更新日時', auto_now=True, null=True)
-    a = models.CharField(max_length=15)
 
     def __str__(self):
         return f"Reservation by {self.customer.name} at {self.location.name} on {self.date}"
@@ -61,7 +60,7 @@ class Favorite(models.Model):
     updated_date = models.DateTimeField(verbose_name='更新日時', auto_now=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"Favorite by {self.customer.email} at {self.location.name}"
     
 class Review(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='ユーザー名')
@@ -72,7 +71,7 @@ class Review(models.Model):
     updated_date = models.DateTimeField(verbose_name='更新日時', auto_now=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"Favorite by {self.customer.email} at {self.location.name}"
     
 class Admin_user(models.Model):
     name = models.CharField(max_length=50, verbose_name='氏名')

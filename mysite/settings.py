@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'django_bootstrap5',
+    'widget_tweaks',
 ]
 
 SITE_ID = 1

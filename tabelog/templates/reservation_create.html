@@ -1,16 +1,28 @@
 {% extends 'base.html' %}
 
-{% load static %}
+{% load widget_tweaks %}
 
 {% block title %}予約ページ{% endblock %}
 
 {% block header%}
 <div class="my-div-style">
-    <h1>予約の作成</h1>
+    <h1 class="text-center mb-4">ご予約ページ</h1>
     <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">予約する</button>
+        <div class="reservation-form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group mb-3 reservation-form">
+                {{ field.label }}: {{ field |add_class:"form-control reservation-form row"}}
+            </div>
+            {% if field.errors %}
+            <div class="alert alert-danger" role="alert">{{ field.errors }}</div>
+            {% endif %}
+            {% endfor %}
+            <div class="row">
+            <div class="col-xs-4">
+            <button class="btn btn-primary" type="submit">予約する</button>
+        </div>
+
     </form>
 </div>
 

@@ -20,13 +20,14 @@
             <div class="main-contents">
                 {% for location in object_list %}
                 <div>
-                    <a href="{% url 'detail' pk=location.pk %}">
+                    <a class="main-a" href="{% url 'detail' pk=location.pk %}">
                         {% for category in location.category.all %}
                         <span>{{ category }}</span>
                         {% endfor %}
                         <p><img src="{{ location.image.url }}" class="location-img"></p>
                         <h3>{{ location.name }}</h3>
                     </a>
+                        <p class="text-limit">{{ location.description }}</p>
                 </div>
             {% endfor %}
             </div>

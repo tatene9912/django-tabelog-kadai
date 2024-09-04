@@ -7,48 +7,70 @@
 {% block header%}
 <div class="my-div-style detail-contents">
     <h1 class="main-h1">店舗詳細</h1>
+</div>
+<div class="text-center">
     <h3>{{ location.name }}</h3>
     <img class="detail-img" src="{{ location.image.url }}" class="location-img">
     <p>{{ location.description }}</p>
 </div>
 
-<table class="table table-striped table-hover table-bordered">
-    <tbody>
-        <tr>
-            <td>価格帯</td>
-            <td>{{ location.price_low }}円～{{ location.price_high }}円</td>
-        </tr>
-        <tr>
-            <td>座席数</td>
-            <td>{{ location.capacity }}席</td>
-        </tr>
-        <tr>
-            <td>定休日</td>
-            <td>
-                {% for holiday in location.holiday.all %}
-                <span>{{ holiday }}　</span>
-                {% empty %}
-                <span>なし</span>
-                {% endfor %}
-            </td>
-        </tr>
-        <tr>
-            <td>郵便番号</td>
-            <td>{{ location.postal_code }}</td>
-        </tr>
-        <tr>
-            <td>住所</td>
-            <td>{{ location.address }}</td>
-        </tr>
-        <tr>
-            <td>電話番号</td>
-            <td>{{ location.phonenumber }}</td>
-        </tr>
-        <tr>
-            <td>営業時間</td>
-            <td>{{ location.time_open }} - {{ location.time_close }}</td>
-        </tr>
-    </tbody>
-</table>
-<a href="{% url 'tabelog:reservation_create' location_id=object.pk %}">予約する</a>
+<div class="text-center">
+    <table class="table table-striped table-hover table-bordered">
+        <tbody>
+            <tr>
+                <td>価格帯</td>
+                <td>{{ location.price_low }}円～{{ location.price_high }}円</td>
+            </tr>
+            <tr>
+                <td>座席数</td>
+                <td>{{ location.capacity }}席</td>
+            </tr>
+            <tr>
+                <td>定休日</td>
+                <td>
+                    {% for holiday in location.holiday.all %}
+                    <span>{{ holiday }}　</span>
+                    {% empty %}
+                    <span>なし</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>郵便番号</td>
+                <td>{{ location.postal_code }}</td>
+            </tr>
+            <tr>
+                <td>住所</td>
+                <td>{{ location.address }}</td>
+            </tr>
+            <tr>
+                <td>電話番号</td>
+                <td>{{ location.phonenumber }}</td>
+            </tr>
+            <tr>
+                <td>営業時間</td>
+                <td>{{ location.time_open }} - {{ location.time_close }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="text-center mb-4">
+    <a class="btn btn-primary text-white w-50" href="{% url 'tabelog:reservation_create' location_id=location.pk %}">予約する</a>
+</div>
+
+{% if user.is_authenticated %}
+    {% if is_favorite %}
+        <p class="text-center">★　登録済み</p>
+    {% else %}
+        <form method="post" action="{% url 'tabelog:add_favorite' location.id %}">
+            {% csrf_token %}
+            <div class="text-center">
+                <button class="btn btn-primary text-white w-50" type="submit">★　お気に入りに追加</button>
+            </div>
+        </form>
+    {% endif %}
+{% else %}
+    <p class="text-center">ログインが必要です</p>
+{% endif %}
 {% endblock %}
