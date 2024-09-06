@@ -29,6 +29,8 @@ urlpatterns = [
     path('reserve/<int:location_id>/', views.ReservationCreateView.as_view(), name='reservation_create'),
     path('account/', include('allauth.urls')), 
     path('add_favorite/<int:location_id>/', views.add_favorite, name='add_favorite'),
+    path('mypage/', views.MyPage.as_view(), name="myPage"),
+    path('edit_profile/', views.edit_profile, name="edit_profile"),
 ]
 
 if settings.DEBUG:

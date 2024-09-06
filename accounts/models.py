@@ -36,11 +36,6 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True) 
-    # account_id = models.CharField(
-    #     verbose_name=_("account_id"),
-    #     unique=True,
-    #     max_length=10
-    # )
     email = models.EmailField(
         verbose_name=_("email"),
         unique=True

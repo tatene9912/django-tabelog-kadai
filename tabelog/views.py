@@ -3,12 +3,15 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, ListView, DetailView, CreateView
+
+from accounts.models import User
 from .models import Favorite, Location,Reservation
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import FavoriteForm, ReservationForm
+from .forms import FavoriteForm, ProfileForm, ReservationForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # class TopView(TemplateView):
 #     template_name = "top.html"
@@ -88,3 +91,30 @@ def add_favorite(request, location_id):
         form = FavoriteForm()
     
     return render(request, 'location_detail.html', {'form': form})
+
+class FavoriteListView(ListView):
+    model = Favorite
+    template_name = 'favorite-list.html'
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        profile_form = ProfileForm(request.POST, instance=request.user)
+        if profile_form.is_valid():
+            profile_form.save()
+            return redirect('myPage')
+    else:
+        profile_form = ProfileForm(instance=request.user)
+    return render(request, 'edit_profile.html', {
+        'profile_form': profile_form,
+    })
+
+class MyPage(LoginRequiredMixin, TemplateView):
+    template_name = 'myPage.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user 
+        # context['favorites'] = Favorite.objects.filter(customer=User)
+        # context['reservations'] = Reservation.objects.filter(customer=User)
+        return context

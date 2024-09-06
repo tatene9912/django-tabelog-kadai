@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}プロフィールの編集{% endblock %}
+
+{% block header%}
+
+<h1 class="my-div-style">プロフィールの編集</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ profile_form.as_p }}
+    <button type="submit">更新</button>
+</form>
+{% endblock %}

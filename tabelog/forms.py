@@ -1,4 +1,5 @@
 from django import forms
+from accounts.models import User
 from .models import Favorite, Location, Reservation
 
 class ReservationForm(forms.ModelForm):
@@ -14,3 +15,11 @@ class FavoriteForm(forms.ModelForm):
     class Meta:
         model = Favorite
         fields = [] 
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('name', 'birth_date')
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type':'date'}),
+        }

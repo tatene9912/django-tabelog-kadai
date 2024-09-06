@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}MyPage{% endblock %}
+
+{% block header%}
+
+<h1 class="my-div-style">{{ user.name }}さんのMyPage</h1>
+
+<h2><a href="{% url 'edit_profile' %}">プロフィールの編集</a></h2>
+
+{% endblock %}
