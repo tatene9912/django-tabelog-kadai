@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+
+{% block title %}店舗一覧{% endblock %}
+
+{% block header%}
+
+<div class="my-div-style">
+    <div class="container">
+        <form class="d-flex rounded" action="{% url 'location_list' %}" method="get">
+            <input name="q" class="form-control" type="search" placeholder="店舗名・カテゴリで検索" aria-label="Search">
+            <button class="btn btn-outline-primary text-white bg-danger" type="submit">検索</button>
+        </form>
+    </div>
+
+    {% if locations %}
+    <h3 class="text-left">{{ search_count }} 件の店舗が見つかりました！</h3>
+    {% for location in object_list %}
+    <div class="d-flex location-contents">
+        <a class="main-a" href="{% url 'detail' pk=location.pk %}">
+            <p><img src="{{ location.image.url }}" class="location-img2"></p>
+        </a>
+        <a class="main-a" href="{% url 'detail' pk=location.pk %}">
+            {% for category in location.category.all %}
+            <span class="location-category">{{ category }}</span>
+            {% endfor %}
+            <h3 class="location-name">{{ location.name }}</h3>
+            <hr class="location-hr">
+            {% with average_scores|get_item:location.id as avg_score %}
+            {% if avg_score %}
+            <div class="d-flex align-bottom">
+                <span class="star-rating">
+                    <div class="star-rating">
+                        <div class="star-rating-front" style="width: {{ average_rates|get_item:location.id|floatformat:1 }}%">★★★★★</div>
+                        <div class="star-rating-back">★★★★★</div>
+                    </div>
+                </span>
+                <span>({{ avg_score|floatformat:1 }}点 / {{ review_counts|get_item:location.id }}件)</span>
+            </div><br>
+            {% else %}
+            <div class="d-flex align-bottom">
+                <span class="star-rating">
+                    <div class="star-rating-back">★★★★★</div>
+                </span>
+                <span>(0点 / 0件)</span>
+            </div><br>
+            {% endif %}
+            {% endwith %}
+            <p class="location-caption">{{ location.description }}</p>
+        </a>    
+    </div>
+{% endfor %}
+{% else %}
+    <p>該当する結果はありませんでした。</p>
+{% endif %}
+    
+    <ul class="pagination">
+        <!-- 前へ の部分 -->
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    
+        <!-- 数字の部分 -->
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active"><a class="page-link" href="#!">{{ num }}</a></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+    
+        <!-- 次へ の部分 -->
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+
+{% endblock %}

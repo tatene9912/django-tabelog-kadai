@@ -17,12 +17,19 @@
         </header>
         <main>
             <h1 class="main-h1">店舗一覧</h1>
+            <div class="container">
+                <form class="d-flex rounded" action="{% url 'location_list' %}" method="get">
+                    <input name="q" class="form-control" type="search" placeholder="店舗名・カテゴリで検索" aria-label="Search">
+                    <button class="btn btn-outline-primary text-white bg-danger" type="submit">検索</button>
+                </form>
+            </div>
+
             <div class="main-contents">
                 {% for location in object_list %}
                 <div>
                     <a class="main-a" href="{% url 'detail' pk=location.pk %}">
                         {% for category in location.category.all %}
-                        <span>{{ category }}</span>
+                        <span class="location-category">{{ category }}</span>
                         {% endfor %}
                         <p><img src="{{ location.image.url }}" class="location-img"></p>
                         <h3>{{ location.name }}</h3>

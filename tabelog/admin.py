@@ -31,6 +31,8 @@ class FavoriteAdmin(admin.ModelAdmin):
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ('id', 'customer', 'location', 'score', 'comment', 'created_date', 'updated_date')
     search_fields = ('customer', 'location', )
+    list_display_links = ('location',)
+    list_editable = ('score',)
 
 class Admin_userAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'password', 'email', 'created_date', 'updated_date')

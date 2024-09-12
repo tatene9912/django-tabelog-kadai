@@ -62,16 +62,31 @@ class Favorite(models.Model):
     def __str__(self):
         return f"Favorite by {self.customer.email} at {self.location.name}"
     
+SCORE_CHOICES = [
+    (1, '★'),
+    (2, '★★'),
+    (3, '★★★'),
+    (4, '★★★★'),
+    (5, '★★★★★'),
+]
+    
 class Review(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='ユーザー名')
     location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name='店舗名')
-    score = models.IntegerField(verbose_name='評価')
+    score = models.PositiveSmallIntegerField(verbose_name='評価', choices=SCORE_CHOICES, default=3)
     comment = models.TextField(null=True, verbose_name='コメント')
     created_date = models.DateTimeField(verbose_name='作成日時', auto_now_add=True, null=True)
     updated_date = models.DateTimeField(verbose_name='更新日時', auto_now=True, null=True)
 
+    class Meta:
+        unique_together = ('location', 'customer')
+
     def __str__(self):
         return f"Favorite by {self.customer.email} at {self.location.name}"
+    
+    def get_percent(self):
+        percent = round(self.score / 5 * 100)
+        return percent
     
 class Admin_user(models.Model):
     name = models.CharField(max_length=50, verbose_name='氏名')

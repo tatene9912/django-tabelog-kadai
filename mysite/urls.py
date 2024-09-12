@@ -23,8 +23,8 @@ from tabelog import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('tabelog.urls')),
-    # path('', views.TopView.as_view(), name="top"),
     path('tabelog/', views.LocationView.as_view(), name="top"),
+    path('tabelog/list', views.LocationListView.as_view(), name="location_list"),
     path('tabelog/detail/<int:pk>', views.LocationDetailView.as_view(), name="detail"),
     path('reserve/<int:location_id>/', views.ReservationCreateView.as_view(), name='reservation_create'),
     path('account/', include('allauth.urls')), 

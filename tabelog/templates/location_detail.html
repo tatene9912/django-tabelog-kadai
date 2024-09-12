@@ -5,6 +5,7 @@
 {% block title %}Nagoyameshi{% endblock %}
 
 {% block header%}
+
 <div class="my-div-style detail-contents">
     <h1 class="main-h1">店舗詳細</h1>
 </div>
@@ -71,6 +72,100 @@
         </form>
     {% endif %}
 {% else %}
-    <p class="text-center">ログインが必要です</p>
+    <p class="text-center">お気に入り機能はログインが必要です</p>
 {% endif %}
+
+{% if not average_rate == 0 %}
+<h3 class="section-title text-center">口コミ情報</h3>
+<div class="star">
+    <div class="star-rating">
+        <div class="star-rating-front" style="width: {{ average_rate }}%">★★★★★</div>
+        <div class="star-rating-back">★★★★★</div>
+    </div>
+    <p>({{ average|floatformat }}点 / {{ review_count }}件)</p>
+    {% else %}
+    <p>　(まだ評価はありません。最初のレビューをお願いします！)</p>
+    {% endif %}
+</div>
+<div class="row text-center">
+    <div class="col-md-12">
+        {% if review_list %}
+            <h3>レビューコメント</h3>
+            {% for item in review_list %}
+                <div class="balloon5">
+                    <div class="faceicon">
+                        <img src="{% static 'assets/img/reviewer.png' %}">
+                        <p>{{ item.customer.name }}</p>
+                    </div>
+                    <div class="chatting">
+                        <div class="says">
+                            <div class="star-rating">
+                                <div class="star-rating-front" style="width: {{ item.get_percent }}%">★★★★★</div>
+                                <div class="star-rating-back">★★★★★</div>
+                            </div>
+                            <br>
+                            <p>{{ item.comment }}</p>
+                            <p>{{ item.created_date }}</p>            
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+        <br>
+            <p>まだレビューはありません。</p>
+            <br>
+        {% endif %}
+        <hr>
+        <h3>レビューを投稿する</h3>
+        {% if user.is_authenticated %}
+            {% if has_posted_review %}
+                <p>この店舗にはすでにレビューを投稿しています。</p>
+            {% else %}
+                {% if error_message %}
+                    <div class="alert alert-danger">
+                        <ul>
+                            {% for error in error_message %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <form class="" action="" method="POST">
+                    {{ review_form.non_field_errors }}
+                    <div class="evaluation" style="text-align: center;">
+                        <input id="score1" type="radio" name="score" value="5" />
+                        <label for="score1"><span class="text">最高</span>★</label>
+                        <input id="score2" type="radio" name="score" value="4" />
+                        <label for="score2"><span class="text">良い</span>★</label>
+                        <input id="score3" type="radio" name="score" value="3" />
+                        <label for="score3"><span class="text">普通</span>★</label>
+                        <input id="score4" type="radio" name="score" value="2" />
+                        <label for="score4"><span class="text">悪い</span>★</label>
+                        <input id="score5" type="radio" name="score" value="1" />
+                        <label for="score5"><span class="text">最悪</span>★</label>
+                    </div>
+                    <label for="comment">コメント:</label><br>
+                    <textarea name="comment" id="comment">{{ review_form.comment.value|default_if_none:'' }}</textarea>
+                    
+                    {% csrf_token %}
+                    <br><br>
+                    <button type="submit" class="btn btn-outline-primary text-white bg-danger">投稿する</button>
+                    {% if form.errors %}
+                    <br>
+                    <p>エラー内容</p>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %} 
+                </form>
+            {% endif %}
+        {% else %}
+            <p>レビューコメントを残すにはログインが必要です。</p>
+            <br>
+            <a class="btn common-btn" href="{% url 'account_signup' %}">新規登録</a>
+            <a class="btn common-btn-outline" href="{% url 'account_login' %}">ログイン</a>
+        {% endif %}
+
 {% endblock %}
