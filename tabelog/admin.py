@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Location, Category, Holiday, Reservation, Favorite, Review, Admin_user
+from .models import Location, Category, Holiday, Reservation, Favorite, Review, Admin_user, Stripe_Customer
 from django.utils.safestring import mark_safe
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
@@ -52,6 +52,9 @@ class LocationResource(ModelResource):
     time_open = Field(attribute='time_open', column_name='time_open')
     time_close = Field(attribute='time_close', column_name='time_close')
 
+    def image(self, obj):
+        return mark_safe('<img src="{}" style="width:100px; height:auto;">'.format(obj.image.url))
+
     # def before_save_instance(self, instance, dry_run):
     #     # CSVからデータを取り込み、多対多フィールドを設定
     #     many_to_many_data = instance.category  # `category`がManyToManyFieldの例
@@ -70,13 +73,18 @@ admin.site.register(Reservation, ReservationAdmin)
 admin.site.register(Favorite, FavoriteAdmin)
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Admin_user, Admin_userAdmin)
+admin.site.register(Stripe_Customer)
 
 @admin.register(Location)
 class LocationAdmin(ImportExportModelAdmin):
     ordering = ['id']
-    list_display = ('id', 'name', 'image', 'description', 'capacity', 'postal_code', 'address', 'phonenumber', 'price_low', 'price_high', 'time_open', 'time_close', 'created_date', 'updated_date')
+    list_display = ('id', 'name', 'thumbnail_image', 'description', 'capacity', 'postal_code', 'address', 'phonenumber', 'price_low', 'price_high', 'time_open', 'time_close', 'created_date', 'updated_date')
     search_fields = ('name', )
     resource_class = LocationResource
+    ordering = ['id', 'price_low', 'price_high',]
+    list_filter = ['capacity', 'price_low', 'price_high',]
 
-    def image(self, obj):
-        return mark_safe('<img src="{}" style="width:100px height:auto;">'.format(obj.img.url))
+    def thumbnail_image(self, obj):
+        return mark_safe('<img src="{}" style="width:100px; height:auto;">'.format(obj.image.url))
+
+    thumbnail_image.short_description = 'Image'

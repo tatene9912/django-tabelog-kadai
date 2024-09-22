@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}レビュー編集{% endblock %}
+
+{% block header%}
+<div class="my-div-style">
+    <h1 class="text-center">レビュー編集</h1><br>
+    <div class="col-md-12 text-center">
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="evaluation" style="text-align: center;">
+                <input id="score1" type="radio" name="score" value="5" {% if form.score.value == 5 %}checked{% endif %}/>
+                <label for="score1"><span class="text">最高</span>★</label>
+    
+                <input id="score2" type="radio" name="score" value="4" {% if form.score.value == 4 %}checked{% endif %}/>
+                <label for="score2"><span class="text">良い</span>★</label>
+    
+                <input id="score3" type="radio" name="score" value="3" {% if form.score.value == 3 %}checked{% endif %}/>
+                <label for="score3"><span class="text">普通</span>★</label>
+    
+                <input id="score4" type="radio" name="score" value="2" {% if form.score.value == 2 %}checked{% endif %}/>
+                <label for="score4"><span class="text">悪い</span>★</label>
+    
+                <input id="score5" type="radio" name="score" value="1" {% if form.score.value == 1 %}checked{% endif %}/>
+                <label for="score5"><span class="text">最悪</span>★</label>
+            </div><br>
+    
+            <label for="comment">コメント:</label><br>
+            <textarea name="comment" id="comment">{{ form.comment.value|default_if_none:'' }}</textarea>
+    
+            <br><br>
+            <button type="submit" class="btn btn-danger">更新</button>
+        </form>
+    </div>
+
+    
+</div>
+{% endblock %}

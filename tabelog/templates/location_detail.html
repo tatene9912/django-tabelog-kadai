@@ -5,7 +5,7 @@
 {% block title %}Nagoyameshi{% endblock %}
 
 {% block header%}
-
+<script src="{% static 'js/scripts.js' %}"></script>
 <div class="my-div-style detail-contents">
     <h1 class="main-h1">店舗詳細</h1>
 </div>
@@ -84,11 +84,11 @@
     </div>
     <p>({{ average|floatformat }}点 / {{ review_count }}件)</p>
     {% else %}
-    <p>　(まだ評価はありません。最初のレビューをお願いします！)</p>
+    <h3 class="section-title text-center">口コミ情報</h3>
     {% endif %}
 </div>
-<div class="row text-center">
-    <div class="col-md-12">
+<div class="row">
+    <div class="col-md-12 text-center">
         {% if review_list %}
             <h3>レビューコメント</h3>
             {% for item in review_list %}
@@ -98,13 +98,13 @@
                         <p>{{ item.customer.name }}</p>
                     </div>
                     <div class="chatting">
-                        <div class="says">
+                        <div class="says" style="text-align: left;">
                             <div class="star-rating">
                                 <div class="star-rating-front" style="width: {{ item.get_percent }}%">★★★★★</div>
                                 <div class="star-rating-back">★★★★★</div>
                             </div>
-                            <br>
-                            <p>{{ item.comment }}</p>
+                            <br><br>
+                            <p class="js-cropText">{{ item.comment }}</p>
                             <p>{{ item.created_date }}</p>            
                         </div>
                     </div>
@@ -116,7 +116,7 @@
             <br>
         {% endif %}
         <hr>
-        <h3>レビューを投稿する</h3>
+        <h3>レビューを投稿する</h3><br>
         {% if user.is_authenticated %}
             {% if has_posted_review %}
                 <p>この店舗にはすでにレビューを投稿しています。</p>

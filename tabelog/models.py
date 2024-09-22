@@ -88,6 +88,16 @@ class Review(models.Model):
         percent = round(self.score / 5 * 100)
         return percent
     
+class Stripe_Customer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    stripeCustomerId = models.CharField(max_length=255)
+    stripeSubscriptionId = models.CharField(max_length=255)
+    regist_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.email
+    
 class Admin_user(models.Model):
     name = models.CharField(max_length=50, verbose_name='氏名')
     password = models.CharField(max_length=50, verbose_name='パスワード')

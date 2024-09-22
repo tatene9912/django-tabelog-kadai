@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block title %}レビュー一覧{% endblock %}
+
+{% block header%}
+
+<div class="my-div-style">
+    <h1 class="text-center">レビュー一覧</h1><br>
+    {% for review in object_list %}
+    <div class="d-flex location-contents">
+        <a class="main-a" href="{% url 'detail' pk=review.location.pk %}">
+            <p><img src="{{ review.location.image.url }}" class="location-img2"></p>
+        </a>
+        <a class="main-a" href="{% url 'detail' pk=review.location.pk %}">
+            <h3 class="location-name">{{ review.location.name }}</h3>
+            <hr class="location-hr">
+            <p class="location-caption">{{ review.location.description }}</p>
+        </a>
+        <a href="{% url 'Review_update' pk=review.pk %}">
+            <button type="submit" class="btn btn-danger remove-btn">編集</button>
+        </a>
+        <a href="{% url 'Review_delete' pk=review.pk %}">
+            <button type="submit" class="btn btn-danger remove-btn">削除</button>
+        </a>
+    </div>
+{% endfor %}
+    
+    <ul class="pagination">
+        <!-- 前へ の部分 -->
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    
+        <!-- 数字の部分 -->
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active"><a class="page-link" href="#!">{{ num }}</a></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+    
+        <!-- 次へ の部分 -->
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+
+{% endblock %}

@@ -7,8 +7,13 @@
 {% block header%}
 <div class="my-div-style text-center">
     <h1>{{ user.name }}さんのMyPage</h1>
+    <div class="MyPage">
+        <a class="select" href="{% url 'edit_profile' %}">プロフィールの編集</a><br>
+        <a class="select" href="{% url 'favorites_list' %}">お気に入り一覧</a><br>
+        <a class="select" href="{% url 'review_list' %}">レビュー一覧</a><br>
+        <a class="select" href="{% url 'checkout_session' %}">有料プラン登録</a><br>
+    </div>
 
-    <h2><a href="{% url 'edit_profile' %}">プロフィールの編集</a></h2>
 </div>
 
 {% endblock %}

@@ -31,6 +31,16 @@ urlpatterns = [
     path('add_favorite/<int:location_id>/', views.add_favorite, name='add_favorite'),
     path('mypage/', views.MyPage.as_view(), name="myPage"),
     path('edit_profile/', views.edit_profile, name="edit_profile"),
+    path('favorite/', views.FavoriteListView.as_view(), name="favorites_list"),
+    path('favorites/remove/<int:pk>/', views.remove_favorite, name='remove_favorite'),
+    path('config/', views.stripe_config),
+    path('create_checkout_session/', views.create_checkout_session, name='checkout_session'),
+    path('success/', views.success),
+    path('cancel/', views.cancel),
+    path('review/', views.ReviewListView.as_view(), name="review_list"),
+    path('reviewUpdate/<int:pk>', views.ReviewUpdateView.as_view(), name='Review_update'),
+    path('reviewDelete/<int:pk>', views.ReviewDeleteView.as_view(), name='Review_delete'),
+    path('webhook/', views.checkout_success_webhook), 
 ]
 
 if settings.DEBUG:

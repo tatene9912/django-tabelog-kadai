@@ -2,19 +2,26 @@ import datetime
 from gettext import translation
 import json
 import logging
+from django.conf import settings
 from django.db import IntegrityError, transaction
+from django.forms import BaseModelForm
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import TemplateView, ListView, DetailView, CreateView
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.db.models import Avg, Q
+import stripe
 from accounts.models import User
-from .models import Favorite, Location,Reservation, Review
+from .models import Favorite, Location,Reservation, Review, Stripe_Customer
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import FavoriteForm, ProfileForm, ReservationForm, ReviewForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
+from django.contrib.auth import get_user_model
+from django.utils.timezone import now
 
 class LocationView(ListView):
     model = Location
@@ -27,6 +34,15 @@ class LocationListView(ListView):
     paginate_by = 15
     context_object_name = 'locations'
 
+    SORT_OPTIONS = [
+        {'key': 'price_high', 'value': '価格が高い順'},
+        {'key': 'price_low', 'value': '価格が低い順'},
+        {'key': 'rating_high', 'value': '評価が高い順'},
+        {'key': 'rating_low', 'value': '評価が低い順'},
+        {'key': 'created_date', 'value': '新しい順'},
+        {'key': 'name', 'value': '名前順'},
+    ]
+
     def get_queryset(self, **kwargs):
         queryset = super().get_queryset(**kwargs)
         query = self.request.GET
@@ -34,7 +50,23 @@ class LocationListView(ListView):
         if q := query.get('q'): 
             queryset = queryset.filter(Q(name__icontains=q)|Q(category__name__icontains=q))
 
-        return queryset.order_by('-created_date')
+        # 並び替えの処理
+        sort = query.get('order_by')
+        if sort == 'price_high':
+            queryset = queryset.order_by('-price_high')
+        elif sort == 'price_low':
+            queryset = queryset.order_by('price_low')
+        elif sort == 'rating_high':
+            queryset = queryset.annotate(average_score=Avg('review__score')).order_by('-average_score')
+        elif sort == 'rating_low':
+            queryset = queryset.annotate(average_score=Avg('review__score')).order_by('average_score')
+        elif sort == 'name':
+            queryset = queryset.order_by('name')
+        else:
+            # デフォルトは作成日順
+            queryset = queryset.order_by('-created_date')
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -72,6 +104,12 @@ class LocationListView(ListView):
         }
         context['review_counts'] = review_counts
 
+        # 並び替えオプションをコンテキストに追加
+        context['sort_list'] = self.SORT_OPTIONS
+
+        # 現在の並び替えオプションをコンテキストに追加
+        context['current_sort'] = self.request.GET.get('order_by', 'created_date')
+
         return context
 
 class LocationDetailView(DetailView):
@@ -93,7 +131,13 @@ class LocationDetailView(DetailView):
         review_count = Review.objects.filter(location_id=restid).count()
         score_ave = Review.objects.filter(location_id=restid).aggregate(Avg('score'))
         average = score_ave['score__avg']
-        average_rate = average / 5 * 100
+
+        # averageがNoneの場合、average_rateの計算をスキップまたはデフォルト値を設定
+        if average is not None:
+            average_rate = average / 5 * 100
+        else:
+            average_rate = 0  # デフォルト値として0を設定
+
         context['review_count'] = review_count
         context['score_ave'] = score_ave
         context['average'] = average
@@ -139,6 +183,38 @@ class LocationDetailView(DetailView):
             context['error_message'] = review_form.non_field_errors() 
             return self.render_to_response(context)
         
+class ReviewListView(LoginRequiredMixin, ListView):
+    model = Review
+    template_name = 'review_list.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        # ログイン中のユーザーに関連するレビューのみをフィルタリング
+        return Review.objects.filter(customer=self.request.user).select_related('location')
+
+class ReviewUpdateView(UpdateView):
+    model = Review
+    fields = ['score', 'comment']
+    template_name = 'review_update.html'
+
+    def form_valid(self, form):
+        review = form.save(commit=False)
+        print(f"Score: {review.score}, Comment: {review.comment}")
+        review.updated_date = now()
+        review.save()
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        messages.info(self.request, 'レビューを編集しました。')
+        return reverse_lazy('review_list')
+    
+class ReviewDeleteView(DeleteView):
+    model = Review
+    template_name = 'review_delete.html'
+
+    def get_success_url(self):
+        messages.info(self.request, 'レビューを削除しました。')
+        return reverse_lazy('review_list')
 
 class ReservationCreateView(CreateView):
     form_class = ReservationForm
@@ -194,9 +270,21 @@ def add_favorite(request, location_id):
     
     return render(request, 'location_detail.html', {'form': form})
 
-class FavoriteListView(ListView):
+class FavoriteListView(LoginRequiredMixin, ListView):
     model = Favorite
-    template_name = 'favorite-list.html'
+    template_name = 'favorites_list.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        # ログイン中のユーザーに関連するお気に入りのみをフィルタリング
+        return Favorite.objects.filter(customer=self.request.user).select_related('location')
+    
+@login_required
+def remove_favorite(request, pk):
+    favorite = get_object_or_404(Favorite, pk=pk, customer=request.user)
+    favorite.delete()
+    messages.success(request, 'お気に入りを解除しました。')
+    return redirect('favorites_list')
 
 @login_required
 def edit_profile(request):
@@ -217,7 +305,97 @@ class MyPage(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user 
-        # context['favorites'] = Favorite.objects.filter(customer=User)
-        # context['reservations'] = Reservation.objects.filter(customer=User)
         return context
     
+@method_decorator(login_required,name="dispatch")
+class SubscriptionView(TemplateView):
+    template_name = 'subscription.html'
+    model = User
+    
+# 設定用の処理
+@csrf_exempt
+def stripe_config(request):
+    if request.method == 'GET':
+        stripe_config = {'publicKey': settings.STRIPE_PUBLIC_KEY}
+        return JsonResponse(stripe_config, safe=False)
+
+# 支払い画面に遷移させるための処理
+@csrf_exempt
+def create_checkout_session(request):
+    if request.method == 'GET':
+        domain_url = 'http://localhost:8000/'
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                client_reference_id=request.user.id if request.user.is_authenticated else None,
+                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url=domain_url + 'cancel/',
+                payment_method_types=['card'],
+                mode='subscription',
+                line_items=[
+                    {
+                        'price': settings.STRIPE_PRICE_ID,
+                        'quantity': 1,
+                    }
+                ]
+            )
+            return redirect(checkout_session.url)
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
+        
+
+endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
+
+@csrf_exempt
+def checkout_success_webhook(request):
+    print("Webhook received")
+    payload = request.body
+    sig_header = request.headers.get('stripe-signature')
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return HttpResponse(status=400)
+
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        # Fulfill the purchase...
+        fulfill_order(session)
+
+    # Passed signature verification
+    return HttpResponse(status=200)
+
+
+def fulfill_order(session):
+    try:
+        user_id = session['metadata'].get('customer_id')
+        if not user_id:
+            print("User ID not found in session metadata.")
+            return
+
+        user = User.objects.get(id=user_id)
+        
+        # Stripe_Customer テーブルに保存
+        Stripe_Customer.objects.create(
+            user=user,
+            stripeCustomerId=session['customer'],
+            stripeSubscriptionId=session['subscription']
+        )
+        print("Stripe Customer created successfully for user:", user)
+    except Exception as e:
+        print("Error in fulfilling order:", str(e))
+# 支払いに成功した後の画面
+def success(request):
+    return render(request, 'success.html')
+
+# 支払いに失敗した後の画面
+def cancel(request):
+    return render(request, 'cancel.html')

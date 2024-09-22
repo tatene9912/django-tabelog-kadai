@@ -157,7 +157,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -172,6 +173,12 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+# STRIPE 追加
+STRIPE_PUBLIC_KEY = 'pk_test_51PyCjbDDYJcRPnIUQOk8J2BIOrWfaWq5YaKl80rmRW8ZLA8MkngSsKxgJuhHYGCuVZfQYIrNxPCqqu3HXhFuK87C00wWxgm0hf'
+STRIPE_SECRET_KEY = 'sk_test_51PyCjbDDYJcRPnIUUgPx9NxOw8kzTxzOgBtzzvG1gvJ3bOxnuANQQprOdBgbFptEif7XLxjjKiNDGGIOGgNce99e00fSOvtD4R'
+STRIPE_PRICE_ID = 'price_1PyCqhDDYJcRPnIUf7D4PyiK'
+STRIPE_ENDPOINT_SECRET = 'whsec_4c79e968bced5387b863dcca7b0de1715fef5962179353882994aedfb9573d5e'
 
 DEBUG = True
 
@@ -195,7 +202,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
         },
@@ -220,5 +227,9 @@ LOGGING = {
             'level': 'INFO',
             'propagate': False,
         },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
     }
 }

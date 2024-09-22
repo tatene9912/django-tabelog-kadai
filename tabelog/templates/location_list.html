@@ -8,15 +8,29 @@
 {% block header%}
 
 <div class="my-div-style">
-    <div class="container">
+    <div class="search-box">
         <form class="d-flex rounded" action="{% url 'location_list' %}" method="get">
             <input name="q" class="form-control" type="search" placeholder="店舗名・カテゴリで検索" aria-label="Search">
             <button class="btn btn-outline-primary text-white bg-danger" type="submit">検索</button>
         </form>
     </div>
 
+    <form action="" method="GET" style="margin-left: auto; width: 400px;">
+        <!-- 検索条件がある場合はそれを hidden input として保持 -->
+        {% if query %}
+        <input type="hidden" name="q" value="{{ query }}">
+        {% endif %}
+        <select name="order_by">
+            {% for s in sort_list %}
+            <option value="{{ s.key }}" {% if current_sort == s.key %}selected{% endif %}>{{ s.value }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="並び替え">
+    </form>
+
+
     {% if locations %}
-    <h3 class="text-left">{{ search_count }} 件の店舗が見つかりました！</h3>
+    <h3 class="text-center">{{ search_count }} 件の店舗が見つかりました！</h3>
     {% for location in object_list %}
     <div class="d-flex location-contents">
         <a class="main-a" href="{% url 'detail' pk=location.pk %}">

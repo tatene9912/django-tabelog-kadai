@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from tabelog.views import LocationView, add_favorite, FavoriteListView, MyPage, edit_profile
+from tabelog.views import LocationView, SubscriptionView, add_favorite, FavoriteListView, MyPage, edit_profile
 
 app_name = 'tabelog'
 urlpatterns = [
