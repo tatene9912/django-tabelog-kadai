@@ -40,6 +40,10 @@ class Admin_userAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'password', 'email', 'created_date', 'updated_date')
     search_fields = ('name', )
 
+class Stripe_CustomerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'stripeCustomerId', 'stripeSubscriptionId', 'stripePaymentMethodId', 'created_at', 'updated_at')
+    search_fields = ('user', )
+
 class LocationResource(ModelResource):
     name = Field(attribute='name', column_name='name')
     category = Field(attribute='category', column_name='category', widget=ManyToManyWidget(Category, 'id'))
@@ -75,7 +79,7 @@ admin.site.register(Reservation, ReservationAdmin)
 admin.site.register(Favorite, FavoriteAdmin)
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Admin_user, Admin_userAdmin)
-admin.site.register(Stripe_Customer)
+admin.site.register(Stripe_Customer, Stripe_CustomerAdmin)
 
 @admin.register(Location)
 class LocationAdmin(ImportExportModelAdmin):

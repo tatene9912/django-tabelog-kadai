@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}有料会員解約{% endblock %}
+
+{% block header%}
+<div class="my-div-style">
+    <h1 class="text-center">有料会員解約</h1><br>
+    <div class="col-md-12 text-center mb-4">
+        <h2>本当に解約しますか？</h2><br><br>
+        <a href="{% url 'myPage' %}">戻る</a>
+        <a class="btn btn-danger" href="{% url 'cancel_subscription' %}">解約</a>
+    </div>
+    
+</div>
+{% endblock %}

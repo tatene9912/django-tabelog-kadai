@@ -440,12 +440,7 @@ def checkout_success_webhook(request):
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
         print("Checkout session completed:", session)
-        fulfill_order(session)
 
-    return HttpResponse(status=200)
-
-def fulfill_order(session):
-    try:
         # 顧客情報を確認
         customer_id = session['customer']
         print("Customer ID:", customer_id)  # デバッグ出力
@@ -455,26 +450,51 @@ def fulfill_order(session):
         email = customer['email']
         print("Email:", email)  # デバッグ出力
 
-        user = User.objects.get(email=email)
-        print("User:", user)  # デバッグ出力
-
-        stripe_customer, created = Stripe_Customer.objects.get_or_create(
-            user=user,
-            defaults={
-                'stripeCustomerId': customer_id,  # 顧客ID
-                'stripeSubscriptionId': session.get('subscription', None)  # サブスクリプションID
-            }
+        # 支払い方法を取得するためのAPI呼び出し
+        payment_methods = stripe.PaymentMethod.list(
+            customer=customer_id,
+            type="card"
         )
-        if not created:
-            stripe_customer.stripeSubscriptionId = session.get('subscription', None)
-            stripe_customer.save()
+        
+        if payment_methods.data:
+            payment_method_id = payment_methods.data[0].id  # 最初の支払い方法を取得
+            print("Payment Method ID:", payment_method_id)  # デバッグ出力
+        else:
+            print("No payment methods found.")
+            payment_method_id = None
 
-        print(f"Stripe Customer {'created' if created else 'updated'} for user: {user}")
+        try:
+            user = User.objects.get(email=email)
+            print("User:", user)  # デバッグ出力
 
-    except User.DoesNotExist:
-        print(f"User with email {email} does not exist.")
-    except Exception as e:
-        print(f"Error in fulfilling order: {str(e)}")
+            # Stripe_Customerの取得または作成
+            stripe_customer, created = Stripe_Customer.objects.get_or_create(
+                user=user,
+                defaults={
+                    'stripeCustomerId': customer_id,  # 顧客ID
+                    'stripeSubscriptionId': session.get('subscription', None),  # サブスクリプションID
+                    'stripePaymentMethodId': payment_method_id  # 支払い方法ID
+                }
+            )
+            if not created:
+                stripe_customer.stripeSubscriptionId = session.get('subscription', None)
+                stripe_customer.stripePaymentMethodId = payment_method_id  # 支払い方法IDを更新
+                stripe_customer.save()
+
+            print(f"Stripe Customer {'created' if created else 'updated'} for user: {user}")
+
+        except User.DoesNotExist:
+            print(f"User with email {email} does not exist.")
+        except Exception as e:
+            print(f"Error in fulfilling order: {str(e)}")
+
+    elif event['type'] == 'invoice.payment_succeeded':
+        # ここにinvoice.payment_succeededの処理を追加できます
+        pass
+
+    return HttpResponse(status=200)
+
+
 
 # 支払いに成功した後の画面
 def success(request):
@@ -557,6 +577,9 @@ def update_payment_method(request):
 
 class PaymentUpdateSuccessView(TemplateView):
     template_name = 'update_payment_method_success.html'
+
+class CancelSubscriptionView(TemplateView):
+    template_name = 'cancel_subscription.html'
 
 
 def cancel_subscription(request):
