@@ -14,9 +14,8 @@
                     <h2 class="masthead-subheading mb-0">NAGOYAMESHIは名古屋のB級グルメを集めたサイトです。</h2>
                 </div>
             </div>
-        </header>
+        </header><br>
         <main>
-            <h1 class="main-h1">店舗一覧</h1>
             <div class="container">
                 <form class="d-flex rounded" action="{% url 'location_list' %}" method="get">
                     <input name="q" class="form-control" type="search" placeholder="店舗名・カテゴリで検索" aria-label="Search">
@@ -24,7 +23,8 @@
                 </form>
             </div>
 
-            <div class="main-contents">
+            <h1 class="main-h1">新着店舗一覧</h1>
+            <div class="main-contents mb-4">
                 {% for location in object_list %}
                 <div>
                     <a class="main-a" href="{% url 'detail' pk=location.pk %}">
@@ -38,34 +38,6 @@
                 </div>
             {% endfor %}
             </div>
-            <ul class="pagination">
-                <!-- 前へ の部分 -->
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                {% endif %}
-            
-                <!-- 数字の部分 -->
-                {% for num in page_obj.paginator.page_range %}
-                    {% if page_obj.number == num %}
-                        <li class="page-item active"><a class="page-link" href="#!">{{ num }}</a></li>
-                    {% else %}
-                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-                    {% endif %}
-                {% endfor %}
-            
-                <!-- 次へ の部分 -->
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
         </main>
 {% endblock %}
 

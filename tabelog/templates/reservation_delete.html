@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}予約削除{% endblock %}
+
+{% block header%}
+<div class="my-div-style">
+    <h1 class="text-center">予約削除</h1><br>
+    <div class="col-md-12 text-center">
+        <form method="post">
+            {% csrf_token %}
+            以下の予約を削除してもよろしいですか？<br>
+            {{ object }}<br>
+            <a href="{% url 'reservation_list' %}">戻る</a>
+            <input type="submit" class="btn btn-danger" value="削除">
+        </form>
+    </div>
+
+    
+</div>
+{% endblock %}

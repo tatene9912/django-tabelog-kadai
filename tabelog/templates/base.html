@@ -46,26 +46,20 @@
             </div>
         </nav>
 
-        {% if messages %}
-        <div class="my-div-style" style="margin-top:1rem;">
-            <div class="message">
-                {% for message in messages %}
-                    {% if message.tags == "success" %}
-                        <div class="alert alert-success" role="alert">
-                    {% elif message.tags == "error" %}
-                        <div class="alert alert-danger" role="alert">
-                    {% else %}
-                        <div class="alert alert-info" role="alert">
-                    {% endif %}
-                            {{ message }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                {% endfor %}
-            </div>
-        </div>
+{% if messages %}
+    <div>
+        {% for message in messages %}
+        {% if message.tags == "error" %}
+            <div class="my-div-style alert alert-danger alert-dismissible fade show" role="alert">
+        {% else %}
+            <div class="my-div-style alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
         {% endif %}
+            {{message}}
+            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
         {% block header%}{% endblock %}
 

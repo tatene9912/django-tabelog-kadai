@@ -27,6 +27,7 @@ urlpatterns = [
     path('tabelog/list', views.LocationListView.as_view(), name="location_list"),
     path('tabelog/detail/<int:pk>', views.LocationDetailView.as_view(), name="detail"),
     path('reserve/<int:location_id>/', views.ReservationCreateView.as_view(), name='reservation_create'),
+    path('reservation/create/available_times/', views.ReservationCreateView.get_available_times, name='available_times'),
     path('account/', include('allauth.urls')), 
     path('add_favorite/<int:location_id>/', views.add_favorite, name='add_favorite'),
     path('mypage/', views.MyPage.as_view(), name="myPage"),
@@ -40,7 +41,13 @@ urlpatterns = [
     path('review/', views.ReviewListView.as_view(), name="review_list"),
     path('reviewUpdate/<int:pk>', views.ReviewUpdateView.as_view(), name='Review_update'),
     path('reviewDelete/<int:pk>', views.ReviewDeleteView.as_view(), name='Review_delete'),
-    path('webhook/', views.checkout_success_webhook), 
+    path('reservation/', views.ReservationListView.as_view(), name="reservation_list"),
+    path('reservationDelete/<int:pk>', views.ReservationDeleteView.as_view(), name='reservation_delete'),
+    path('checkout_success_webhook/', views.checkout_success_webhook, name='checkout_success_webhook'),
+    path('cancel_subscription/', views.cancel_subscription, name='cancel_subscription'),
+    path('subscription/', views.SubscriptionView.as_view(), name='subscription'),
+    path('update_payment_method/', views.update_payment_method, name='update_payment_method'),
+    path('update_payment_method_success/', views.PaymentUpdateSuccessView.as_view(), name='update_payment_method_success'),
 ]
 
 if settings.DEBUG:

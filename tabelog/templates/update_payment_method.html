@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}カード情報更新{% endblock %}
+
+{% block header %}
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static 'js/stripe.js' %}"></script>
+<h1 class="my-div-style">カード情報更新</h1>
+<form id="payment-form" method="post">
+    {% csrf_token %}
+    <div id="card-element"></div>
+    <input type="hidden" id="StripeSubscriptionId" value="{{ old_payment_method_id }}">
+    <input type="hidden" id="subscriptionId" value="{{ subscription_id }}">
+    <button id="update-payment-button" type="submit" class="btn btn-primary text-white btn-danger">更新</button>
+</form>
+
+{% endblock %}

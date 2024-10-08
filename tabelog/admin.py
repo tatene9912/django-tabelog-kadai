@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+from tabelog.views import ImageFilter
 from .models import Location, Category, Holiday, Reservation, Favorite, Review, Admin_user, Stripe_Customer
 from django.utils.safestring import mark_safe
 from import_export import resources
@@ -82,7 +84,7 @@ class LocationAdmin(ImportExportModelAdmin):
     search_fields = ('name', )
     resource_class = LocationResource
     ordering = ['id', 'price_low', 'price_high',]
-    list_filter = ['capacity', 'price_low', 'price_high',]
+    list_filter = ['capacity', 'price_low', 'price_high', ImageFilter] 
 
     def thumbnail_image(self, obj):
         return mark_safe('<img src="{}" style="width:100px; height:auto;">'.format(obj.image.url))

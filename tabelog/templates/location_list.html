@@ -20,7 +20,7 @@
         {% if query %}
         <input type="hidden" name="q" value="{{ query }}">
         {% endif %}
-        <select name="order_by">
+        <select name="order_by" class="selectbox-1">
             {% for s in sort_list %}
             <option value="{{ s.key }}" {% if current_sort == s.key %}selected{% endif %}>{{ s.value }}</option>
             {% endfor %}

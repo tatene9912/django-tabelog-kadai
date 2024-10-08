@@ -56,11 +56,20 @@
     </table>
 </div>
 
-<div class="text-center mb-4">
-    <a class="btn btn-primary text-white w-50" href="{% url 'tabelog:reservation_create' location_id=location.pk %}">予約する</a>
-</div>
+{% if user.is_authenticated %}
+    {% if user.stripe_customer %}
+        <div class="text-center mb-4">
+            <a class="btn btn-primary text-white w-50" href="{% url 'tabelog:reservation_create' location_id=location.pk %}">予約する</a>
+        </div>
+    {% else %}
+    <div class="text-center mb-4">
+            <a class="btn btn-primary text-white w-50" href="{% url 'subscription' %}">予約する</a>
+        </div>
+    {% endif %}
+{% endif %}
 
 {% if user.is_authenticated %}
+{% if user.stripe_customer %}
     {% if is_favorite %}
         <p class="text-center">★　登録済み</p>
     {% else %}
@@ -71,6 +80,11 @@
             </div>
         </form>
     {% endif %}
+{% else %}
+<div class="text-center">
+    <a class="btn btn-primary text-white w-50" href="{% url 'subscription' %}">★　お気に入りに追加</a>
+</div>
+{% endif %}
 {% else %}
     <p class="text-center">お気に入り機能はログインが必要です</p>
 {% endif %}
@@ -118,6 +132,7 @@
         <hr>
         <h3>レビューを投稿する</h3><br>
         {% if user.is_authenticated %}
+            {% if user.stripe_customer %}
             {% if has_posted_review %}
                 <p>この店舗にはすでにレビューを投稿しています。</p>
             {% else %}
@@ -160,6 +175,10 @@
                         {% endfor %}
                     {% endif %} 
                 </form>
+            {% endif %}
+            {% else %}
+                <p>レビューを残すには有料会員登録が必要です</p>
+                <a class="select" href="{% url 'subscription' %}">有料プラン登録</a><br>
             {% endif %}
         {% else %}
             <p>レビューコメントを残すにはログインが必要です。</p>
