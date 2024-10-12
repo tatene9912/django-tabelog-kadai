@@ -1,7 +1,8 @@
-import datetime
+from datetime import datetime, timedelta
 from gettext import translation
 import json
 import logging
+from urllib import request
 from django.conf import settings
 from django.db import IntegrityError, transaction
 from django.forms import BaseModelForm
@@ -250,6 +251,11 @@ class ReservationCreateView(CreateView):
         kwargs = super().get_form_kwargs()
         kwargs['location_id'] = self.kwargs['location_id']
         return kwargs
+    
+    def form_invalid(self, form):
+        print("Form is invalid. Errors: ", form.errors)
+        messages.error(self.request, 'フォームにエラーがあります。入力内容を確認してください。')
+        return super().form_invalid(form)
 
     def form_valid(self, form):
         location = get_object_or_404(Location, pk=self.kwargs['location_id'])
@@ -258,6 +264,12 @@ class ReservationCreateView(CreateView):
         reservation.customer = self.request.user
 
         reservation_datetime = datetime.datetime.combine(reservation.date, reservation.time)
+
+        now = datetime.datetime.now()
+        if reservation.date == now.date() and reservation.time < (now + datetime.timedelta(hours=2)).time():
+            messages.error(self.request, '当日の予約は、現在から2時間後のみ可能です。')
+            return self.form_invalid(form)
+
         if Reservation.objects.filter(location=location, date=reservation.date, time=reservation.time).exists():
             messages.error(self.request, 'すみません、入れ違いで予約がありました。別の日時はどうですか。')
             return self.form_invalid(form)
@@ -274,20 +286,50 @@ class ReservationCreateView(CreateView):
     def get_available_times(request):
         date_str = request.GET.get('date')
         location_id = request.GET.get('location_id')
-        
+
         if date_str and location_id:
             try:
-                date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
+                date = datetime.strptime(date_str, "%Y-%m-%d").date()
             except ValueError:
                 return HttpResponseBadRequest("Invalid date format")
-            
+
             location = get_object_or_404(Location, pk=location_id)
-            form = ReservationForm(location_id=location_id)
-            
-            available_times = form.get_available_times(date=date)
+            now = datetime.now()
+            open_time = location.time_open
+            close_time = location.time_close
+            available_times = []
+
+            # 当日の場合
+            if date == now.date():
+                two_hours_later = now + timedelta(hours=2)
+                if two_hours_later.time() > open_time:
+                    open_time = two_hours_later.time()
+
+            # 営業時間内の30分間隔の時間候補を生成
+            current_datetime = datetime.combine(date, open_time)
+            close_datetime = datetime.combine(date, close_time)
+
+            # close_time が open_time よりも早い場合、閉店時間を翌日に設定
+            if close_time < open_time:
+                close_datetime += timedelta(days=1)
+
+            print(f"Generating times from {open_time} to {close_time}")  # デバッグ用出力
+
+            while current_datetime < close_datetime:
+                time_str = current_datetime.strftime('%H:%M')
+                print(f"Generated time: {time_str}")  # 各時間の生成を確認
+                available_times.append(time_str)
+                current_datetime += timedelta(minutes=30)
+
+            print(f"Final available times: {available_times}")  # 最終的な時間リストの確認
+
             return JsonResponse(available_times, safe=False)
-        
+
         return JsonResponse([], safe=False)
+
+
+
+
     
 def add_favorite(request, location_id):
     if request.method == 'POST':

@@ -8,14 +8,14 @@
 {% block header%}
 
 <div class="my-div-style">
-    <div class="search-box">
+    <div>
         <form class="d-flex rounded" action="{% url 'location_list' %}" method="get">
-            <input name="q" class="form-control" type="search" placeholder="店舗名・カテゴリで検索" aria-label="Search">
+            <input name="q" class="search-box" type="search" placeholder="店舗名・カテゴリで検索" aria-label="Search">
             <button class="btn btn-outline-primary text-white bg-danger" type="submit">検索</button>
         </form>
     </div>
 
-    <form action="" method="GET" style="margin-left: auto; width: 400px;">
+    <form action="" method="GET">
         <!-- 検索条件がある場合はそれを hidden input として保持 -->
         {% if query %}
         <input type="hidden" name="q" value="{{ query }}">
@@ -44,7 +44,7 @@
             <hr class="location-hr">
             {% with average_scores|get_item:location.id as avg_score %}
             {% if avg_score %}
-            <div class="d-flex align-bottom">
+            <div class="d-flex align-bottom score-sp">
                 <span class="star-rating">
                     <div class="star-rating">
                         <div class="star-rating-front" style="width: {{ average_rates|get_item:location.id|floatformat:1 }}%">★★★★★</div>
@@ -54,7 +54,7 @@
                 <span>({{ avg_score|floatformat:1 }}点 / {{ review_counts|get_item:location.id }}件)</span>
             </div><br>
             {% else %}
-            <div class="d-flex align-bottom">
+            <div class="d-flex align-bottom score-sp">
                 <span class="star-rating">
                     <div class="star-rating-back">★★★★★</div>
                 </span>

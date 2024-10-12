@@ -37,17 +37,17 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True) 
     email = models.EmailField(
-        verbose_name=_("email"),
+        verbose_name=_("メールアドレス"),
         unique=True
     )
     name = models.CharField(
-        verbose_name=_("name"),
+        verbose_name=_("名前"),
         max_length=150,
         null=True,
         blank=False
     )
     birth_date = models.DateField(
-        verbose_name=_("birth_date"),
+        verbose_name=_("誕生日"),
         blank=True,
         null=True
     )
@@ -64,11 +64,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=True,
     )
     created_at = models.DateTimeField(
-        verbose_name=_("created_at"),
+        verbose_name=_("作成日時"),
         auto_now_add=True
     )
     updated_at = models.DateTimeField(
-        verbose_name=_("updated_at"),
+        verbose_name=_("更新日時"),
         auto_now=True
     )
 

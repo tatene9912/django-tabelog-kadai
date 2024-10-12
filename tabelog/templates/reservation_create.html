@@ -1,27 +1,39 @@
 {% extends 'base.html' %}
 
 {% load static %}
-
 {% load widget_tweaks %}
 
 {% block title %}予約ページ{% endblock %}
 
-{% block header%}
+{% block header %}
 <script src="{% static 'js/scripts.js' %}"></script>
-<div class="my-div-style">
+<div class="my-div-style text-center">
     <h1 class="text-center mb-4">ご予約ページ</h1>
+    <p>最初に予約日を選択してください</p>
     <form method="post">
         <input type="hidden" id="locationId" value="{{ location.id }}">
         <div class="reservation-form">
             {% csrf_token %}
-            {{ form.date }}
-            {{ form.time }}
-            {{ form.headcount }}
+            <div class="form-group">
+                <div class="form-row">
+                    {{ form.date.label_tag }}
+                    {{ form.date|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-row">
+                    {{ form.time.label_tag }}
+                    {{ form.time|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-row">
+                    {{ form.headcount.label_tag }}
+                    {{ form.headcount|add_class:"form-control" }}
+                </div>
+            </div>
             <button class="btn btn-primary" type="submit">予約する</button>
         </div>
     </form>
 </div>
-
-
-
 {% endblock %}
