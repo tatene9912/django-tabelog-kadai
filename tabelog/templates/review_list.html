@@ -19,10 +19,10 @@
             <hr class="location-hr">
             <p class="location-caption">{{ review.location.description }}</p>
         </a>
-        <a href="{% url 'Review_update' pk=review.pk %}">
+        <a href="{% url 'Review_update' pk=review.pk %}" class="list-btn">
             <button type="submit" class="btn btn-danger remove-btn">編集</button>
         </a>
-        <a href="{% url 'Review_delete' pk=review.pk %}">
+        <a href="{% url 'Review_delete' pk=review.pk %}" class="list-btn">
             <button type="submit" class="btn btn-danger remove-btn">削除</button>
         </a>
     </div>

@@ -254,7 +254,6 @@ class ReservationCreateView(CreateView):
     
     def form_invalid(self, form):
         print("Form is invalid. Errors: ", form.errors)
-        messages.error(self.request, 'フォームにエラーがあります。入力内容を確認してください。')
         return super().form_invalid(form)
 
     def form_valid(self, form):
@@ -262,20 +261,13 @@ class ReservationCreateView(CreateView):
         reservation = form.save(commit=False)
         reservation.location = location
         reservation.customer = self.request.user
+        reservation.time = self.request.POST['time']
 
-        reservation_datetime = datetime.datetime.combine(reservation.date, reservation.time)
 
-        now = datetime.datetime.now()
-        if reservation.date == now.date() and reservation.time < (now + datetime.timedelta(hours=2)).time():
-            messages.error(self.request, '当日の予約は、現在から2時間後のみ可能です。')
-            return self.form_invalid(form)
+        now = datetime.now()
 
         if Reservation.objects.filter(location=location, date=reservation.date, time=reservation.time).exists():
-            messages.error(self.request, 'すみません、入れ違いで予約がありました。別の日時はどうですか。')
-            return self.form_invalid(form)
-
-        if not self.request.user.is_authenticated:
-            messages.error(self.request, 'ログインが必要です。')
+            messages.error(self.request, '予約がいっぱいです。別の時間でご予約ください。')
             return self.form_invalid(form)
 
         reservation.save()
@@ -299,9 +291,18 @@ class ReservationCreateView(CreateView):
             close_time = location.time_close
             available_times = []
 
+            # 時刻を次の30分単位に切り上げる関数
+            def round_up_time(dt):
+                if dt.minute == 0 or dt.minute == 30:
+                    return dt
+                return (dt + timedelta(minutes=30 - dt.minute % 30)).replace(second=0, microsecond=0)
+
+
             # 当日の場合
             if date == now.date():
-                two_hours_later = now + timedelta(hours=2)
+                current_time = now.replace(second=0, microsecond=0)
+                rounded_time = round_up_time(current_time)
+                two_hours_later = rounded_time + timedelta(hours=2)
                 if two_hours_later.time() > open_time:
                     open_time = two_hours_later.time()
 
