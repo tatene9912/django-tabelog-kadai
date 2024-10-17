@@ -80,6 +80,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -157,7 +158,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1' ,'herokuapp.com']
 # ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
 
 # Default primary key field type
@@ -181,7 +182,7 @@ STRIPE_PRICE_ID = 'price_1PyCqhDDYJcRPnIUf7D4PyiK'
 STRIPE_ENDPOINT_SECRET = 'whsec_4c79e968bced5387b863dcca7b0de1715fef5962179353882994aedfb9573d5e'
 
 
-DEBUG = True
+DEBUG = False
 
 LOGGING = {
     'version': 1,
@@ -234,3 +235,16 @@ LOGGING = {
     },
     }
 }
+
+import dj_database_url
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
+
+db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default'].update(db_from_env)
+
+
+if not DEBUG:
+    SECRET_KEY = '9h2=518scv!cut0s70!2xa=q8y1h3@6n&xroxa)fq_t#$5(686'   
+    import django_heroku
+    django_heroku.settings(locals())
