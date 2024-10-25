@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from tabelog.views import ImageFilter
 from .models import Location, Category, Holiday, Reservation, Favorite, Review, Admin_user, Stripe_Customer
 from django.utils.safestring import mark_safe
@@ -60,12 +59,6 @@ class LocationResource(ModelResource):
 
     def image(self, obj):
         return mark_safe('<img src="{}" style="width:100px; height:auto;">'.format(obj.image.url))
-
-    # def before_save_instance(self, instance, dry_run):
-    #     # CSVからデータを取り込み、多対多フィールドを設定
-    #     many_to_many_data = instance.category  # `category`がManyToManyFieldの例
-    #     instance.save()  # インスタンスを一度保存してからセット
-    #     instance.category.set(many_to_many_data)
 
     class Meta:
         model = Location
