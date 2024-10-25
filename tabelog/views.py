@@ -272,7 +272,7 @@ class ReservationCreateView(CreateView):
 
         reservation.save()
         messages.success(self.request, '予約が完了しました。')
-        return redirect('tabelog:location_detail', pk=location.pk)
+        return redirect('reservation_list')
 
     @staticmethod
     def get_available_times(request):
@@ -346,7 +346,7 @@ def add_favorite(request, location_id):
             favorite.location_id = location_id
             favorite.save()
             messages.info(request, 'お気に入りに追加しました。')
-            return redirect('tabelog:location_detail', pk=location_id)
+            return redirect('favorites_list')
     else:
         form = FavoriteForm()
     
