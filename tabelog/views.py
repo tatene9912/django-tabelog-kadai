@@ -429,7 +429,7 @@ def stripe_config(request):
 @csrf_exempt
 def create_checkout_session(request):
     if request.method == 'GET':
-        domain_url = 'http://localhost:8000/'
+        domain_url = 'https://mynagoyameshi-6001a0ebbfca.herokuapp.com/'
         stripe.api_key = settings.STRIPE_SECRET_KEY
         
         # ユーザーが認証されているか確認
