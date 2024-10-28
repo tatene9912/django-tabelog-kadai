@@ -462,6 +462,9 @@ def checkout_success_webhook(request):
     except stripe.error.SignatureVerificationError as e:
         print("Invalid signature:", e)
         return HttpResponse(status=400)
+    except Exception as e:
+        print("Exception:", e)
+        return HttpResponse(status=400)
 
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
