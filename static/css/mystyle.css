@@ -1,0 +1,534 @@
+@import url('https://fonts.googleapis.com/css2?family=Zen+Old+Mincho&display=swap');
+
+/* 共通スタイル */
+.masthead-content{
+    font-family: 'Zen Old Mincho', serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.my-div-style{
+    margin-top: 6rem !important;
+}
+.margin-auto{
+    margin: auto;
+}
+
+
+
+/* TOPページ */
+.main-h1{
+    margin-left: 5px;
+    margin-top: 10px;
+}
+.main-h1::after{
+    content: url(../assets/img/line.JPG);
+    margin-left: 10px;
+}
+.main-contents{
+    display: flex;
+    flex-wrap: wrap;
+}
+.main-contents div{
+    margin: 2rem 1.5rem;
+    width: 350px;
+    height: 500px;
+    border: 1px solid #5b5656d1;
+    border-radius: 25px;
+}
+.location-category{
+    margin-left: 10px;
+    color: orange;
+    text-decoration: underline;
+}
+.location-img{
+    width: 348px;
+    height: 300px;
+    object-fit: cover;
+}
+.main-a{
+    text-decoration: none;
+    color: #000;
+    max-width: 600px;
+}
+.text-limit{
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.list-btn{
+    margin-left: 10px;
+    margin-top: 5px;
+}
+
+/* 店舗一覧ページ */
+.search-box{
+    margin-left: 20%;
+    width: 50%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.location-contents{
+    width: 80%;
+    height: 302px;
+    margin: 1rem auto;
+    border: 1px solid #5b5656d1;
+    border-radius: 25px;
+}
+.location-img2{
+    width: 348px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 25px 0 0 25px;
+}
+.location-name{
+    margin-left: 10px;
+    margin-top: 5px;
+}
+.location-hr{
+    border-top: 1px solid #4e4a4a;
+    width: 100%;
+    margin: 1.2rem 0.8rem;
+}
+.location-caption{
+    margin-left: 10px;
+    font-size: 16px;
+}
+.selectbox-1 {
+    position: relative;
+}
+    
+.selectbox-1::before,
+.selectbox-1::after {
+    position: absolute;
+    content: '';
+    pointer-events: none;
+}
+    
+.selectbox-1::before {
+    display: inline-block;
+    right: 0;
+    width: 2.8em;
+    height: 2.8em;
+    border-radius: 0 3px 3px 0;
+    background-color: #b584b8;
+}
+    
+.selectbox-1::after {
+    position: absolute;
+    top: 50%;
+    right: 1.4em;
+    transform: translate(50%, -50%) rotate(45deg);
+    width: 6px;
+    height: 6px;
+    border-bottom: 3px solid #fff;
+    border-right: 3px solid #fff;
+}
+    
+.selectbox-1 select {
+    appearance: none;
+    min-width: 230px;
+    height: 2.8em;
+    padding: .4em 3.6em .4em .8em;
+    border: none;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    color: #333;
+    font-size: 1em;
+    cursor: pointer;
+}
+    
+.selectbox-1 select:focus {
+    outline: 2px solid #b584b8;
+}
+
+/* 詳細ページ */
+.detail-contents{
+    margin-left: 10px;
+}
+.detail-img{
+    width: 800px;
+    max-width: 100%;
+    object-fit: contain;
+}
+.detail-contents p{
+    font-size: 25px;
+}
+.my-table{
+    margin-bottom: 2rem;
+}
+.more {
+    display: none;
+}
+.dot {
+    display: inline;
+}
+button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    border: none;
+    color: rgb(51, 101, 209);
+    background-color: #fffaf0;
+    cursor: pointer;
+}
+
+
+/* 予約フォーム */
+.reservation-form{
+    text-align: center;
+    display: block;
+    margin: auto;
+    font-family: 'Zen Old Mincho', serif;
+}
+.form-group {
+    margin-bottom: 15px; 
+}
+.form-row {
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+}
+label {
+    font-weight: bold; 
+    margin-right: 5px;
+    width: 5%;
+}
+
+.form-control {
+    width: 40%; 
+    padding: 10px; 
+    border: 1px solid #ccc;
+    border-radius: 4px; 
+}
+
+.btn-primary {
+    width: 20%; 
+    padding: 10px; 
+    margin-bottom: 20px;
+}
+
+
+/* レビュー用 */
+
+.balloon5 {
+    width: 100%;
+    margin: 1.5em 0;
+    overflow: hidden;
+    margin-left: 10px;
+}
+
+.balloon5 .faceicon {
+    float: left;
+    margin-right: -180px;
+    width: 140px;
+}
+
+.faceicon{
+    margin-left: 10px;
+}
+
+.balloon5 .faceicon img{
+    width: 80%;
+    height: auto;
+    border: solid 1px #342a2a;
+    border-radius: 50%;
+}
+
+.balloon5 .chatting {
+    width: 100%;
+}
+
+.says {
+    display: inline-block;
+    position: relative; 
+    margin: 5px 0 0 0;
+    padding: 17px 0;
+    border-radius: 12px;
+    background: #fffaf0;
+    width: 80%;
+}
+
+.says:after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 18px; 
+    left: -24px;
+    border: 12px solid transparent;
+    border-right: 12px solid #fffaf0;
+}
+
+.says p {
+    text-align: left;
+    padding: 0;
+}
+
+.says img {
+    float: right;
+    padding: 2px;
+    margin-right: 80px;
+}
+
+.faceicon p {
+    text-align:center;
+}
+
+textarea {
+    width: 50%;
+    border-radius: 10px;
+}
+
+/* スコア入力の★ */
+.evaluation{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+}
+.evaluation input[type='radio']{
+    display: none;
+}
+.evaluation label{
+    position: relative;
+    padding: 10px 10px 0;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 30px;
+}
+.evaluation label .text{
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;
+    color: gray;
+}
+.evaluation label:hover,
+.evaluation label:hover ~ label,
+.evaluation input[type='radio']:checked ~ label{
+    color: #ffcc33;
+}
+
+/* スコア表示の★ */
+.star{
+    margin: auto;
+    text-align: center;
+    width: 500px;
+}
+.star-rating {
+    position: relative;
+    width: auto;
+    height: 1em;
+    font-size: 25px;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+.star-rating-front {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    color: #ffcc33;
+    z-index: 1;
+    white-space: nowrap;
+}
+.star-rating-back {
+    color: #ccc;
+}
+
+/* お気に入り一覧ページ */
+.remove-btn{
+    margin-top: 5px;
+}
+
+/* マイページ */
+.MyPage{
+    display: block;
+}
+.select{
+    display: block;
+    width: 60%;
+    text-decoration: none;
+    text-align: center;
+    background-color: #000;
+    font-size: 25px;
+    color: #ffffff;
+    border: 1px solid #474545;
+    border-radius: 25px;
+    margin: 2rem auto;
+    padding: 1rem 6rem;
+}
+.select:hover{
+    background-color: #ffffff;
+    color: #000;
+}
+
+footer{
+    margin-top: auto;
+}
+
+/*====================
+スマートフォン用のスタイル
+=====================*/
+@media screen and (max-width: 767px) {
+    .main-h1::after{
+        content: none;
+    }
+    .main-contents{
+        display: block;
+    }
+    .main-contents div{
+        margin: 1rem auto;
+    }
+    .my-table tbody tr td{
+        width: max-content;
+        padding: 0 5px;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word; 
+        max-width: 100px;
+    }
+    .select {
+        width: 85%;
+        font-size: 20px;
+        padding: 1rem 4rem; 
+    }
+
+    label {
+        font-weight: bold; 
+        margin-right: 5px;
+        width: 20%;
+    }
+    
+    .form-control {
+        width: 40%; 
+        padding: 10px; 
+        border: 1px solid #ccc;
+        border-radius: 4px; 
+    }
+    
+    .btn-primary {
+        width: 50%; 
+        padding: 10px; 
+        margin-bottom: 20px;
+    }
+
+    .search-box{
+        margin-left: 5px;
+        width: 80%;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .location-contents {
+        display: block !important;
+        margin-bottom: 20px;
+        width: 90%;
+        height: auto;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .location-category {
+        display: inline;
+        margin-bottom: 5px;
+        font-size: 1rem;
+        color: #fc9015;
+    }
+
+    .location-img2 {
+        width: 100%;
+        height: auto;
+        display: block;
+        margin-bottom: 10px;
+        border-radius: 10px;
+    }
+
+    .location-name {
+        font-size: 1.5rem;
+        color: #000;
+        margin-bottom: 5px;
+    }
+
+    .location-hr {
+        margin: 5px 0;
+    }
+
+    .star-rating {
+        display: block;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .score-sp{
+        display: block !important;
+    }
+
+    .location-caption {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 10px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3; 
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* ページネーションのスタイルも中央揃え */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        padding: 10px 0;
+    }
+
+    .pagination .page-item {
+        margin: 0 5px;
+    }
+
+    .pagination .page-link {
+        padding: 5px 10px;
+        border-radius: 50%;
+    }
+
+    /* 並び替えのドロップダウンリスト */
+    form[method="GET"] {
+        margin-top: 20px;
+        margin-left: 5px;
+        text-align: center;
+    }
+
+    select.selectbox-1 {
+        width: 80%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    input[type="submit"] {
+        width: 80%;
+        padding: 10px;
+        background-color: rgb(87, 135, 240);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .balloon5 {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        margin: 1.5em 0;
+        overflow: hidden;
+        margin-left: 10px;
+    }
+    
+    
+    .faceicon{
+        display: flex;
+    }
+    
+}
