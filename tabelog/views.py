@@ -448,6 +448,7 @@ endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
 
 @csrf_exempt
 def checkout_success_webhook(request):
+    print('a')
     payload = request.body
     sig_header = request.headers.get('stripe-signature')
     event = None
