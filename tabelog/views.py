@@ -457,6 +457,9 @@ def create_checkout_session(request):
             except Exception as e:
                 return JsonResponse({'error': str(e)})
         
+import logging
+
+logger = logging.getLogger(__name__)
 
 endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
 
@@ -475,6 +478,9 @@ def checkout_success_webhook(request):
         return HttpResponse(status=400)
     except stripe.error.SignatureVerificationError as e:
         print("Invalid signature:", e)
+        return HttpResponse(status=400)
+    except Exception as e:
+        logger.error(f"Error verifying webhook: {str(e)}")
         return HttpResponse(status=400)
 
     # デバッグ出力
