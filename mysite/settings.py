@@ -28,7 +28,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
     'tabelog.apps.TabelogConfig',
     'import_export',
     'accounts',
@@ -159,7 +161,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media_local'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 
@@ -173,6 +175,11 @@ STRIPE_SECRET_KEY = 'sk_test_51PyCjbDDYJcRPnIUUgPx9NxOw8kzTxzOgBtzzvG1gvJ3bOxnuA
 STRIPE_PRICE_ID = 'price_1PyCqhDDYJcRPnIUf7D4PyiK'
 STRIPE_ENDPOINT_SECRET = 'whsec_HCfKgk7wwD1ww4UI5T1kBGsiz3kx71bo'
 
+CLOUDINARY_STORAGE  = {
+    'CLOUD_NAME':'hoep8dpt4',
+    'API_KEY': '785511999933492',
+    'API_SECRET': 'GTHDFdFWcQn2yhINFQWJmou-wgE'
+}
 
 DEBUG = False
 
