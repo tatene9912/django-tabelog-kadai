@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 from accounts.models import User
 
@@ -23,7 +24,7 @@ class Location(models.Model):
     name = models.CharField(max_length=50, verbose_name='店舗名')
     category = models.ManyToManyField(Category, verbose_name='カテゴリ', blank=True)
     holiday = models.ManyToManyField(Holiday, verbose_name='店休日', blank=True)
-    image = models.ImageField(blank=True, default='noImage.png', verbose_name='画像')
+    image = CloudinaryField(blank=True, default='noImage.png', verbose_name='画像')
     description = models.TextField(max_length=200, verbose_name='説明', null=True)
     capacity = models.IntegerField(verbose_name='定員', null=True)
     postal_code = models.CharField(max_length=7, verbose_name='郵便番号', null=True)
