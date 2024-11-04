@@ -59,6 +59,8 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # usernameフィールドを無効化
 ACCOUNT_USERNAME_REQUIRED = False  # usernameを不要にする
 ACCOUNT_EMAIL_REQUIRED = True  # emailを必須にする
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # emailで認証する
+# デフォルトのメール送信元の設定
+DEFAULT_FROM_EMAIL = 't.atene0l4o1v2e@gmail.com'
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True  # パスワード確認フィールドを使用する場合
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory' # メール検証を必須とする
 
