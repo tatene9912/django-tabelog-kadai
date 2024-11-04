@@ -14,22 +14,22 @@
         <input type="hidden" id="locationId" value="{{ location.id }}">
         <div class="reservation-form">
             {% csrf_token %}
-            <div class="form-group">
-                <div class="form-row">
+            <div class="reservation-form-group">
+                <div class="reservation-form-row">
                     {{ form.date.label_tag }}
-                    {{ form.date|add_class:"form-control" }}
+                    {{ form.date|add_class:"reservation-form-control" }}
                 </div>
             </div>
-            <div class="form-group">
-                <div class="form-row">
+            <div class="reservation-form-group">
+                <div class="reservation-form-row">
                     <label for="time">予約時間:</label>
-                    <select name="time" class="form-control" id="time"></select>
+                    <select name="time" class="reservation-form-control" id="time"></select>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="form-row">
+            <div class="reservation-form-group">
+                <div class="reservation-form-row">
                     {{ form.headcount.label_tag }}
-                    {{ form.headcount|add_class:"form-control" }}
+                    {{ form.headcount|add_class:"reservation-form-control" }}
                 </div>
             </div>
             <button class="btn btn-primary" type="submit">予約する</button>

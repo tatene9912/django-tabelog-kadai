@@ -180,21 +180,21 @@ button {
     margin: auto;
     font-family: 'Zen Old Mincho', serif;
 }
-.form-group {
+.reservation-form-group {
     margin-bottom: 15px; 
 }
-.form-row {
+.reservation-form-row {
     display: flex; 
     align-items: center; 
     justify-content: center;
 }
-label {
+.reservation-form-label {
     font-weight: bold; 
     margin-right: 5px;
     width: 5%;
 }
 
-.form-control {
+.reservation-form-control {
     width: 40%; 
     padding: 10px; 
     border: 1px solid #ccc;
