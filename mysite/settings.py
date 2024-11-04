@@ -71,8 +71,14 @@ ACCOUNT_FORMS = {
 }
 
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
+EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST = 'smtp.googlemail.com' #これでもいける
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 't.atene0l4o1v2e@gmail.com'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER # send_mailのfromがNoneの場合自動で入る。
+EMAIL_HOST_PASSWORD = 'wcly ixsc qqwb cfko'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
