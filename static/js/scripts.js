@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const textCropLength = 60;
 
     document.querySelectorAll('.js-cropText').forEach((el) => {
-        console.log("Processing element:", el); // デバッグ用ログ
         const text = el.innerHTML;
 
         // 文字数がtextCropLength以下なら何もしない

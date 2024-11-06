@@ -36,7 +36,7 @@ class ReviewAdmin(admin.ModelAdmin):
     list_editable = ('score',)
 
 class Admin_userAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'password', 'email', 'created_date', 'updated_date')
+    list_display = ('id', 'name', 'email', 'created_date', 'updated_date')
     search_fields = ('name', )
 
 class Stripe_CustomerAdmin(admin.ModelAdmin):

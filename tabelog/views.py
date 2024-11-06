@@ -2,10 +2,7 @@ from datetime import datetime, timedelta
 from gettext import translation
 import json
 import logging
-from urllib import request
 from django.conf import settings
-from django.db import IntegrityError, transaction
-from django.forms import BaseModelForm
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -314,15 +311,11 @@ class ReservationCreateView(CreateView):
             if close_time < open_time:
                 close_datetime += timedelta(days=1)
 
-            print(f"Generating times from {open_time} to {close_time}")  # デバッグ用出力
-
             while current_datetime < close_datetime:
                 time_str = current_datetime.strftime('%H:%M')
-                print(f"Generated time: {time_str}")  # 各時間の生成を確認
                 available_times.append(time_str)
                 current_datetime += timedelta(minutes=30)
 
-            print(f"Final available times: {available_times}")  # 最終的な時間リストの確認
 
             return JsonResponse(available_times, safe=False)
 
@@ -456,10 +449,6 @@ def create_checkout_session(request):
                 return redirect(checkout_session.url)
             except Exception as e:
                 return JsonResponse({'error': str(e)})
-        
-import logging
-
-logger = logging.getLogger(__name__)
 
 endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
 
@@ -474,30 +463,21 @@ def checkout_success_webhook(request):
             payload, sig_header, endpoint_secret
         )
     except ValueError as e:
-        print("Invalid payload:", e)
         return HttpResponse(status=400)
     except stripe.error.SignatureVerificationError as e:
-        print("Invalid signature:", e)
         return HttpResponse(status=400)
     except Exception as e:
-        logger.error(f"Error verifying webhook: {str(e)}")
         return HttpResponse(status=400)
-
-    # デバッグ出力
-    print("Received event:", event)
 
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        print("Checkout session completed:", session)
 
         # 顧客情報を確認
         customer_id = session['customer']
-        print("Customer ID:", customer_id)  # デバッグ出力
 
         # 顧客情報をStripeから取得
         customer = stripe.Customer.retrieve(customer_id)
         email = customer['email']
-        print("Email:", email)  # デバッグ出力
 
         # 支払い方法を取得するためのAPI呼び出し
         payment_methods = stripe.PaymentMethod.list(
@@ -507,14 +487,11 @@ def checkout_success_webhook(request):
         
         if payment_methods.data:
             payment_method_id = payment_methods.data[0].id  # 最初の支払い方法を取得
-            print("Payment Method ID:", payment_method_id)  # デバッグ出力
         else:
-            print("No payment methods found.")
             payment_method_id = None
 
         try:
             user = User.objects.get(email=email)
-            print("User:", user)  # デバッグ出力
 
             # Stripe_Customerの取得または作成
             stripe_customer, created = Stripe_Customer.objects.get_or_create(
@@ -530,15 +507,12 @@ def checkout_success_webhook(request):
                 stripe_customer.stripePaymentMethodId = payment_method_id  # 支払い方法IDを更新
                 stripe_customer.save()
 
-            print(f"Stripe Customer {'created' if created else 'updated'} for user: {user}")
-
         except User.DoesNotExist:
             print(f"User with email {email} does not exist.")
         except Exception as e:
             print(f"Error in fulfilling order: {str(e)}")
 
     elif event['type'] == 'invoice.payment_succeeded':
-        # ここにinvoice.payment_succeededの処理を追加できます
         pass
 
     return HttpResponse(status=200)
@@ -562,9 +536,6 @@ def update_payment_method(request):
             payment_method_id = data.get('payment_method_id')
             subscription_id = data.get('subscription_id')
 
-            print('payment_method_id:', payment_method_id)
-            print('subscription_id:', subscription_id)
-
             if not payment_method_id:
                 return JsonResponse({'status': 'error', 'message': 'Payment method ID is missing'})
 
@@ -573,17 +544,14 @@ def update_payment_method(request):
             # サブスクリプションから古い支払い方法を取得
             subscription = stripe.Subscription.retrieve(subscription_id)
             old_payment_method_id = subscription.default_payment_method
-            print('old_payment_method_id:', old_payment_method_id)
 
             if old_payment_method_id:
                 # 古い支払い方法のデタッチ
                 stripe.PaymentMethod.detach(old_payment_method_id)
-                print('古い支払い方法がデタッチされました')
 
             # 新しいカード情報を顧客にアタッチ
             customer = subscription.customer
             stripe.PaymentMethod.attach(payment_method_id, customer=customer)
-            print('新しい支払い方法がアタッチされました')
 
             # デフォルトの支払い方法を更新
             stripe.Customer.modify(
@@ -592,7 +560,6 @@ def update_payment_method(request):
                     'default_payment_method': payment_method_id,
                 },
             )
-            print('デフォルトの支払い方法が更新されました')
 
             # Stripe_Customerを取得し、支払い方法IDを更新
             stripe_customer = Stripe_Customer.objects.get(user=request.user)
@@ -642,22 +609,18 @@ def cancel_subscription(request):
 
             # Stripe APIを使ってサブスクリプションをキャンセル
             stripe.Subscription.delete(subscription_id)
-            print(f"Subscription {subscription_id} canceled successfully.")
 
             # Stripe_Customerレコードを削除
             stripe_customer.delete()
-            print(f"Stripe_Customer record for user {request.user} deleted successfully.")
 
             return render(request, 'cancel_success.html')  # 解約成功ページにリダイレクト
 
         except stripe.error.StripeError as e:
             # Stripe APIでのエラー処理
-            print(f"Error in canceling subscription: {e}")
             return redirect('error_page')  # エラーページにリダイレクト
 
         except Exception as e:
             # その他のエラー処理
-            print(f"Unexpected error: {e}")
             return redirect('error_page')  # エラーページにリダイレクト
     else:
         return redirect('login')  # 認証されていない場合はログインページへ

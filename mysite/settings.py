@@ -59,8 +59,6 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # usernameフィールドを無効化
 ACCOUNT_USERNAME_REQUIRED = False  # usernameを不要にする
 ACCOUNT_EMAIL_REQUIRED = True  # emailを必須にする
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # emailで認証する
-# デフォルトのメール送信元の設定
-# DEFAULT_FROM_EMAIL = 't.atene0l4o1v2e@gmail.com'
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True  # パスワード確認フィールドを使用する場合
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory' # メール検証を必須とする
 
@@ -73,7 +71,6 @@ ACCOUNT_FORMS = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
 EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST = 'smtp.googlemail.com' #これでもいける
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 't.atene0l4o1v2e@gmail.com'
@@ -113,9 +110,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -123,9 +117,6 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -143,9 +134,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'ja'
 
 TIME_ZONE = 'Asia/Tokyo'
@@ -154,9 +142,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
