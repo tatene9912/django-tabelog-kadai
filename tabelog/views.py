@@ -64,7 +64,7 @@ class LocationListView(ListView):
         query = self.request.GET
 
         if q := query.get('q'): 
-            queryset = queryset.filter(Q(name__icontains=q)|Q(category__name__icontains=q))
+            queryset = queryset.filter(Q(name__icontains=q) | Q     (category__name__icontains=q))
 
         # 並び替えの処理
         sort = query.get('order_by')
