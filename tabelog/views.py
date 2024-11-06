@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from gettext import translation
+from django.utils import timezone
 import json
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
@@ -260,7 +261,10 @@ class ReservationCreateView(CreateView):
         reservation.time = self.request.POST['time']
 
 
-        now = datetime.now()
+        # 選択された予約日が過去日であれば予約を無効にする
+        if reservation.date < timezone.now().date():
+            messages.error(self.request, '本日以降の日付を選択してください。')
+            return self.form_invalid(form)
 
         if Reservation.objects.filter(location=location, date=reservation.date, time=reservation.time).exists():
             messages.error(self.request, '予約がいっぱいです。別の時間でご予約ください。')
