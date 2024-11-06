@@ -75,7 +75,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 't.atene0l4o1v2e@gmail.com'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER # send_mailのfromがNoneの場合自動で入る。
-EMAIL_HOST_PASSWORD = 'wcly ixsc qqwb cfko'
+EMAIL_HOST_PASSWORD = ''
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -165,14 +165,14 @@ STATICFILES_DIRS = [
 
 # STRIPE 追加
 STRIPE_PUBLIC_KEY = 'pk_test_51PyCjbDDYJcRPnIUQOk8J2BIOrWfaWq5YaKl80rmRW8ZLA8MkngSsKxgJuhHYGCuVZfQYIrNxPCqqu3HXhFuK87C00wWxgm0hf'
-STRIPE_SECRET_KEY = 'sk_test_51PyCjbDDYJcRPnIUUgPx9NxOw8kzTxzOgBtzzvG1gvJ3bOxnuANQQprOdBgbFptEif7XLxjjKiNDGGIOGgNce99e00fSOvtD4R'
+STRIPE_SECRET_KEY = ''
 STRIPE_PRICE_ID = 'price_1PyCqhDDYJcRPnIUf7D4PyiK'
-STRIPE_ENDPOINT_SECRET = 'whsec_HCfKgk7wwD1ww4UI5T1kBGsiz3kx71bo'
+STRIPE_ENDPOINT_SECRET = ''
 
 CLOUDINARY_STORAGE  = {
     'CLOUD_NAME':'hoep8dpt4',
     'API_KEY': '785511999933492',
-    'API_SECRET': 'GTHDFdFWcQn2yhINFQWJmou-wgE'
+    'API_SECRET': ''
 }
 
 DEBUG = False
