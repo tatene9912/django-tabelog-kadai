@@ -1,13 +1,12 @@
 from datetime import datetime, timedelta
 from gettext import translation
 import json
-from django.db.models.functions import Coalesce
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.db.models import Avg, Q, Value
+from django.db.models import Avg, Q
 import stripe
 from accounts.models import User
 from django.contrib import admin
@@ -64,7 +63,7 @@ class LocationListView(ListView):
         query = self.request.GET
 
         if q := query.get('q'): 
-            queryset = queryset.filter(Q(name__icontains=q) | Q     (category__name__icontains=q))
+            queryset = queryset.filter(Q(name__icontains=q)|Q(category__name__icontains=q))
 
         # 並び替えの処理
         sort = query.get('order_by')
@@ -73,13 +72,9 @@ class LocationListView(ListView):
         elif sort == 'price_low':
             queryset = queryset.order_by('price_low')
         elif sort == 'rating_high':
-            queryset = queryset.annotate(
-                average_score=Coalesce(Avg('review__score'), Value(0))
-            ).order_by('-average_score')
+            queryset = queryset.annotate(average_score=Avg('review__score')).order_by('-average_score')
         elif sort == 'rating_low':
-            queryset = queryset.annotate(
-                average_score=Coalesce(Avg('review__score'), Value(0))
-            ).order_by('average_score')
+            queryset = queryset.annotate(average_score=Avg('review__score')).order_by('average_score')
         elif sort == 'name':
             queryset = queryset.order_by('name')
         else:
